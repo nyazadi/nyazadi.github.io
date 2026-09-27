@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Numa Yazadi, software quality engineer. Reliable systems, test automation and internal tools.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#9889;</text></svg>">
+<title>Numa Yazadi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..600&display=swap">
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --text:#17171A;
+    --muted:#63646C;
+    --faint:#E7E7EB;
+    --pop:#2F52E0;
+    --wash:rgba(47,82,224,.22);
+    --sans:"Schibsted Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --hand:"Caveat","Bradley Hand","Segoe Print",cursive;
+    --pad:clamp(22px,6vw,80px);
+    --stack:clamp(56px,8vw,96px);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#141416;--text:#ECECEE;--muted:#9B9CA4;--faint:#2B2B30;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#141416;--text:#ECECEE;--muted:#9B9CA4;--faint:#2B2B30;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg);color:var(--text);
+    font-family:var(--sans);font-size:19px;line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--wash);color:var(--text)}
+  a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-decoration-color:var(--faint);transition:color .2s}
+  a:hover{text-decoration-style:wavy;text-decoration-color:var(--pop);color:var(--pop)}
+  :focus-visible{outline:2px solid var(--pop);outline-offset:4px;border-radius:2px}
+  p{margin:0 0 1.15em}
+  p:last-child{margin-bottom:0}
+
+  .shell{max-width:1180px;margin-inline:auto;padding-inline:var(--pad);
+    min-height:100vh;display:flex;flex-direction:column}
+
+  /* page wipe */
+  .wipe{
+    position:fixed;inset:0;z-index:60;background:var(--pop);
+    transform:scaleX(0);transform-origin:left;pointer-events:none;
+  }
+
+  /* nav */
+  nav{
+    display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:14px 28px;
+    padding-block:clamp(26px,4vw,40px) 0;
+  }
+  .brand{font-weight:800;font-size:1.06rem;letter-spacing:-.02em;text-decoration:none;display:flex;align-items:baseline;gap:10px}
+  .brand .mark{
+    width:11px;height:11px;background:var(--pop);display:inline-block;flex:none;
+    transition:transform .45s cubic-bezier(.3,.8,.3,1),background-color .4s;
+  }
+  .brand:hover{text-decoration:none;color:var(--pop)}
+  .brand:hover .mark{transform:rotate(135deg) scale(1.2)}
+  .navlinks{display:flex;gap:clamp(20px,3.5vw,40px);font-size:1rem}
+  .navlinks a{
+    text-decoration:none;color:var(--muted);padding:2px .2em;
+    background-image:linear-gradient(100deg, transparent 0, var(--wash) 1% 99%, transparent 100%);
+    background-repeat:no-repeat;background-size:0% 62%;background-position:0 78%;
+    transition:background-size .35s cubic-bezier(.3,.7,.2,1),color .2s;
+  }
+  .navlinks a:hover{color:var(--text);background-size:100% 62%}
+  .navlinks a[aria-current="page"]{color:var(--text);font-weight:600;background-size:100% 62%}
+
+  /* pages */
+  main{flex:1}
+  .page{display:none}
+  .page.on{display:block}
+  @media (prefers-reduced-motion:no-preference){
+    .page.on{animation:rise .55s cubic-bezier(.2,.75,.25,1) both}
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .col{max-width:34rem}
+
+  h1.title{
+    position:relative;display:inline-block;
+    font-weight:850;letter-spacing:-.035em;line-height:1;
+    font-size:clamp(2.7rem,7vw,4.6rem);
+    margin:clamp(54px,10vh,120px) 0 clamp(26px,4vw,40px);
+  }
+  h1.title::after{
+    content:"";position:absolute;left:-.06em;right:-.06em;bottom:.06em;height:.26em;
+    background:var(--wash);z-index:-1;transform:scaleX(0);transform-origin:left;
+  }
+  .page.on h1.title::after{animation:bar .7s cubic-bezier(.3,.75,.2,1) .25s both}
+  @keyframes bar{to{transform:scaleX(1)}}
+  .lead{font-size:clamp(1.18rem,2.1vw,1.42rem);line-height:1.6}
+
+  /* home */
+  .name-wrap{position:relative;margin-top:clamp(40px,9vh,104px)}
+  h1.name{
+    font-weight:850;font-size:clamp(3.6rem,15vw,10.5rem);line-height:.92;
+    letter-spacing:-.045em;margin:0;user-select:none;-webkit-user-select:none;
+  }
+  h1.name .w{display:inline-block;white-space:nowrap}
+  h1.name .l{display:inline-block;cursor:grab;touch-action:none;will-change:transform;position:relative;transition:color .5s}
+  h1.name .l.held{cursor:grabbing;z-index:2;color:var(--pop)}
+  .note{
+    font-family:var(--hand);font-weight:600;color:var(--pop);font-size:1.6rem;line-height:1.1;
+    position:absolute;left:54%;top:clamp(16px,3vw,40px);transform:rotate(-4deg);
+    display:flex;align-items:flex-end;gap:2px;pointer-events:none;
+  }
+  .note svg{width:64px;height:48px;overflow:visible;margin-bottom:-6px}
+  .note path{fill:none;stroke:var(--pop);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  @media (max-width:820px){
+    .note{position:static;transform:rotate(-3deg);margin:26px 0 0 4px;font-size:1.35rem}
+    .note svg{display:none}
+    .home-intro{margin-top:clamp(92px,20vw,150px)}
+  }
+  .home-intro{margin-top:clamp(78px,12vw,150px)}
+
+  .creed{
+    margin-top:clamp(56px,9vw,110px);max-width:40rem;
+    font-size:clamp(1.5rem,3.6vw,2.5rem);line-height:1.22;letter-spacing:-.028em;font-weight:750;
+  }
+  .creed span{display:block}
+  .creed i.a{font-style:normal;color:var(--pop)}
+  @media (prefers-reduced-motion:no-preference){
+    .page.on .creed span{animation:creep .7s cubic-bezier(.2,.8,.25,1) both}
+    .page.on .creed span:nth-child(1){animation-delay:.15s}
+    .page.on .creed span:nth-child(2){animation-delay:.28s}
+    .page.on .creed span:nth-child(3){animation-delay:.41s}
+    .page.on .creed span:nth-child(4){animation-delay:.54s}
+  }
+  @keyframes creep{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+  .onward{list-style:none;margin:clamp(56px,8vw,96px) 0 0;padding:0;display:flex;flex-direction:column}
+  .onward li{border-top:1px solid var(--faint)}
+  .onward li:last-child{border-bottom:1px solid var(--faint)}
+  .onward a{
+    display:flex;align-items:baseline;gap:16px;justify-content:space-between;
+    padding:clamp(18px,2.6vw,26px) .5em;text-decoration:none;
+    font-size:clamp(1.25rem,2.6vw,1.7rem);font-weight:700;letter-spacing:-.02em;
+    background-image:linear-gradient(90deg,var(--wash),var(--wash));
+    background-repeat:no-repeat;background-size:0% 100%;background-position:0 0;
+    transition:background-size .45s cubic-bezier(.3,.8,.25,1),color .25s;
+  }
+  .onward .say{color:var(--muted);font-size:.95rem;font-weight:400;letter-spacing:0;text-align:right;transition:color .25s}
+  .onward .arw{transition:transform .35s cubic-bezier(.2,.8,.2,1);display:inline-block}
+  .onward a:hover{background-size:100% 100%;color:var(--pop)}
+  .onward a:hover .say{color:var(--pop)}
+  .onward a:hover .arw{transform:translateX(8px)}
+  @media (max-width:560px){
+    .onward a{flex-direction:column;gap:4px}
+    .onward .say{text-align:left}
+  }
+
+  /* highlighter */
+  .hl{
+    background-image:linear-gradient(100deg, transparent 0, var(--wash) 1% 99%, transparent 100%);
+    background-repeat:no-repeat;background-size:0% 78%;background-position:0 72%;
+    padding:0 .12em;margin:0 -.12em;
+    -webkit-box-decoration-break:clone;box-decoration-break:clone;
+    transition:background-size .9s cubic-bezier(.3,.7,.2,1);
+  }
+  .hl.on{background-size:100% 78%}
+
+  /* entries */
+  .entries{display:flex;flex-direction:column;gap:var(--stack)}
+  .entry{max-width:34rem}
+  .entry .when{color:var(--muted);font-size:.98rem;margin:0 0 6px;font-variant-numeric:tabular-nums}
+  .entry h2{font-size:clamp(1.42rem,3vw,1.8rem);font-weight:750;letter-spacing:-.025em;line-height:1.2;margin:0 0 4px}
+  .entry h2::before{
+    content:"";display:inline-block;width:.42em;height:.42em;background:var(--pop);
+    margin-right:.4em;vertical-align:.06em;
+  }
+  .entry .where{color:var(--muted);margin:0 0 20px;font-size:1.02rem}
+  .entry .aside{font-family:var(--hand);font-weight:600;color:var(--pop);font-size:1.3rem;display:inline-block;transform:rotate(-2deg);margin-left:8px}
+
+  .rule{border:0;border-top:1px solid var(--faint);margin:var(--stack) 0 0;max-width:34rem}
+
+  h3.sub{font-size:1rem;font-weight:700;margin:var(--stack) 0 18px;letter-spacing:0}
+  h3.sub::after{content:"";display:block;width:34px;height:3px;background:var(--pop);margin-top:9px}
+  .pairs{margin:0;display:grid;grid-template-columns:auto 1fr;gap:12px 24px;font-size:1.02rem;max-width:34rem}
+  .pairs dt{color:var(--muted);white-space:nowrap}
+  .pairs dd{margin:0}
+  @media (max-width:560px){
+    .pairs{grid-template-columns:1fr;gap:2px}
+    .pairs dd{margin-bottom:14px}
+  }
+
+  .pull{
+    max-width:36rem;margin:var(--stack) 0 0;padding-left:clamp(18px,3vw,28px);
+    border-left:4px solid var(--pop);
+    font-size:clamp(1.24rem,2.5vw,1.6rem);line-height:1.38;font-weight:700;letter-spacing:-.02em;
+  }
+
+  footer{
+    margin-top:clamp(80px,12vw,150px);padding-block:22px 34px;
+    border-top:1px solid var(--faint);font-size:.9rem;color:var(--muted);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;
+  }
+  footer a{text-decoration-color:var(--faint)}
+
+  .draw path{stroke-dasharray:var(--len,200);stroke-dashoffset:var(--len,200)}
+  .draw.on path{stroke-dashoffset:0;transition:stroke-dashoffset .9s cubic-bezier(.5,0,.2,1)}
+  .note .txt{opacity:0;transition:opacity .5s ease .45s}
+  .note.on .txt{opacity:1}
+
+  @media (prefers-reduced-motion:reduce){
+    .hl{transition:none;background-size:100% 78%}
+    .draw path{stroke-dashoffset:0}
+    .note .txt{opacity:1}
+    .onward .arw,.brand .mark{transition:none}
+    h1.title::after{transform:scaleX(1)}
+  }
+</style>
+</head>
+<body>
+
+
+<div class="wipe" id="wipe" aria-hidden="true"></div>
+
+<div class="shell">
+  <nav>
+    <a class="brand" href="#/"><span class="mark"></span>numa yazadi</a>
+    <div class="navlinks">
+      <a href="#/work" data-nav="work">work</a>
+      <a href="#/projects" data-nav="projects">projects</a>
+      <a href="#/about" data-nav="about">about</a>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- HOME -->
+    <section class="page on" id="p-home" data-page="home">
+      <div class="name-wrap">
+        <h1 class="name" id="name" aria-label="Numa Yazadi"><span class="w">numa</span> <span class="w">yazadi</span></h1>
+        <div class="note draw" id="note" aria-hidden="true">
+          <svg viewBox="0 0 64 48"><path d="M58 6 C 44 4, 26 12, 16 30 M16 30 L 13 19 M16 30 L 27 27"/></svg>
+          <span class="txt">go ahead, grab a letter</span>
+        </div>
+      </div>
+
+      <div class="col home-intro">
+        <p class="lead">Hi, I'm Numa. I'm a <span class="hl">software quality engineer at Abbott</span>, on the infrastructure and automation side of cancer diagnostics.</p>
+        <p class="lead">I build the test automation, pipelines and internal tools that other engineers work with every day.</p>
+      </div>
+
+      <p class="creed">
+        <span>I want to turn complex problems into</span>
+        <span><i class="a">simple, useful technology</i> that moves</span>
+        <span>people and industries forward.</span>
+      </p>
+
+      <ul class="onward col">
+        <li><a href="#/work">work <span class="say">where I've been, and what I do there <span class="arw">&rarr;</span></span></a></li>
+        <li><a href="#/projects">projects <span class="say">things I've built on my own time <span class="arw">&rarr;</span></span></a></li>
+        <li><a href="#/about">about <span class="say">what I care about, and how to reach me <span class="arw">&rarr;</span></span></a></li>
+      </ul>
+    </section>
+
+    <!-- WORK -->
+    <section class="page" id="p-work" data-page="work" hidden>
+      <h1 class="title">work</h1>
+      <p class="lead col">I've spent the last few years somewhere between quality engineering and platform work, mostly building the tools that catch problems before a release does.</p>
+
+      <div class="entries" style="margin-top:var(--stack)">
+        <article class="entry">
+          <p class="when">2025 &ndash; now</p>
+          <h2>Software Quality Engineer, Infrastructure &amp; Automation</h2>
+          <p class="where">Abbott, Cancer Diagnostics</p>
+          <p>I own quality and reliability for cloud-native platforms on AWS, and I build the automation and internal tooling that engineering teams across several products depend on. Much of the job is taking a requirement that isn't quite defined yet and turning it into something shipped, measurable and trusted.</p>
+          <p>Some of that tooling is <span class="hl">LLM-powered</span>: systems that connect test results back to requirements, so a team can see where the risk is before they ship instead of after.</p>
+          <p>The part I care about most is adoption. I treat the engineers using my tools like users, which means demos, real onboarding, and iterating on the thing long after it technically works.</p>
+        </article>
+
+        <article class="entry">
+          <p class="when">2023 &ndash; 2025</p>
+          <h2>STEM Academic Tutor</h2>
+          <p class="where">University of California, San Diego</p>
+          <p>Two years of tutoring undergrads in math, programming, biology, chemistry and engineering, one-on-one and in small groups. I got good at spotting the exact place someone got lost, which turns out to be the same skill as figuring out why nobody is using your tool.</p>
+        </article>
+      </div>
+
+      <hr class="rule">
+
+      <h3 class="sub">School</h3>
+      <dl class="pairs">
+        <dt>2025</dt><dd>B.S. Bioengineering: Bioinformatics<br><span style="color:var(--muted)">University of California, San Diego</span></dd>
+      </dl>
+
+      <h3 class="sub">Certifications</h3>
+      <dl class="pairs">
+        <dt>2025</dt><dd>ISTQB Certified Tester, Foundation Level</dd>
+        <dt>2025</dt><dd>ICAgile Certified Professional</dd>
+        <dt>2025</dt><dd>Prompt Engineering, LinkedIn Learning</dd>
+        <dt>2026</dt><dd>Programming for Everybody, University of Michigan</dd>
+      </dl>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="page" id="p-projects" data-page="projects" hidden>
+      <h1 class="title">projects</h1>
+      <p class="lead col">Two things I've built outside of work. Both started because I wanted them to exist.</p>
+
+      <div class="entries" style="margin-top:var(--stack)">
+        <article class="entry">
+          <p class="when">2026 &ndash; now</p>
+          <h2>Digital Music Diary<span class="aside">still building this one</span></h2>
+          <p>A journal for the music you actually listen to, instead of the year-end summary an algorithm hands you. React and Django REST up front, with a serverless backend on Lambda, API Gateway, S3 and DynamoDB.</p>
+          <p>I picked the user and the metric first, then built against them. It's the project that taught me to <span class="hl">ship something small and see if anyone comes back</span>.</p>
+        </article>
+
+        <article class="entry">
+          <p class="when">2023 &ndash; 2025</p>
+          <h2>WarfaRef</h2>
+          <p>A cross-platform React Native app for people taking warfarin. It lets them track their own INR readings and share them securely with their care team, rather than waiting for the next clinic visit to find out where they stand.</p>
+          <p>Firebase handled authentication and sync, so the data was there and current whenever a provider needed to look at it.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="page" id="p-about" data-page="about" hidden>
+      <h1 class="title">about</h1>
+
+      <div class="col">
+        <p class="lead">I came to software from the science side. I studied bioengineering and bioinformatics at UC San Diego, spent a lot of time around pipelines and data, and slowly realized the part I liked best was the tooling around the science rather than the science itself.</p>
+      </div>
+
+      <p class="pull">Reliability isn't a feature you add at the end. It's a property of how the thing was built.</p>
+
+      <h3 class="sub">What I care about</h3>
+      <div class="col">
+        <p>Whether a system actually holds up. Not whether it demos well, but whether it still behaves on a bad day, with real data moving through it and nobody watching. That's the part of engineering I find genuinely interesting.</p>
+        <p>Quality gets treated like a stage at the end of a project, and I think that's backwards. If the pipeline is good and the feedback is fast, quality mostly follows. Testing is how you find out what you built, so I'd rather find out early and often.</p>
+        <p>I also care that the work lands somewhere real. I'm on diagnostics platforms, so what comes out of a pipeline eventually turns into <span class="hl">an answer for a patient</span>. That keeps me honest about reliability in a way no dashboard could.</p>
+        <p>And I care about the engineers on the other end of my tools. Something technically correct but confusing is something nobody opens. I'd rather ship smaller and have people actually use it.</p>
+      </div>
+
+      <h3 class="sub">What I use</h3>
+      <div class="col">
+        <p>Mostly Python and TypeScript. AWS, Kafka and CI/CD on the infrastructure side. React and React Native when I'm building something people actually touch. Lately a lot of LLM tooling and MCP, plus the usual suspects: Git, SQL, Jira, Figma.</p>
+      </div>
+
+      <h3 class="sub">Say hi</h3>
+      <div class="col">
+        <p>I'm always up for talking about developer tools, testing, reliability, or anything you're building.</p>
+        <p><a href="mailto:nyazadi2003@gmail.com">nyazadi2003@gmail.com</a><br>
+        <a href="https://www.linkedin.com/in/numa-yazadi" target="_blank" rel="noopener">linkedin.com/in/numa-yazadi</a></p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Numa Yazadi</span>
+    <span><a href="mailto:nyazadi2003@gmail.com">nyazadi2003@gmail.com</a></span>
+    <span>&copy; 2026</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- colour: one elegant pop per page, reshuffled every visit ---------- */
+  var PALETTE = [
+    { l:'#D8422A', d:'#FF7A5E' },   /* poppy   */
+    { l:'#2F52E0', d:'#8098FF' },   /* cobalt  */
+    { l:'#0C8A66', d:'#3FD3A3' },   /* jade    */
+    { l:'#6742DE', d:'#AE92FF' },   /* violet  */
+    { l:'#B57A0D', d:'#F0B54A' },   /* marigold*/
+    { l:'#CE3F74', d:'#FF87B0' },   /* rose    */
+    { l:'#0B7683', d:'#3FC8D4' }    /* teal    */
+  ];
+  var order = PALETTE.slice();
+  for (var i = order.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random()*(i+1)), t = order[i]; order[i] = order[j]; order[j] = t;
+  }
+  var pops = { home:order[0], work:order[1], projects:order[2], about:order[3] };
+  var current = 'home';
+
+  function isDark(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function hexToRgb(h){
+    return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+  }
+  function paint(name){
+    var c = pops[name], dark = isDark(), hex = dark ? c.d : c.l, rgb = hexToRgb(hex);
+    var root = document.documentElement.style;
+    root.setProperty('--pop', hex);
+    root.setProperty('--wash', 'rgba(' + rgb.join(',') + ',' + (dark ? .26 : .22) + ')');
+  }
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ paint(current); });
+  new MutationObserver(function(){ paint(current); })
+    .observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+  /* ---------- router with a colour wipe ---------- */
+  var pages = {}, navs = {}, wipe = document.getElementById('wipe');
+  document.querySelectorAll('.page').forEach(function(p){ pages[p.dataset.page] = p; });
+  document.querySelectorAll('[data-nav]').forEach(function(a){ navs[a.dataset.nav] = a; });
+
+  function routeName(){
+    var h = (location.hash || '').replace(/^#\/?/, '').split('?')[0];
+    return pages[h] ? h : 'home';
+  }
+  function show(name, initial){
+    current = name;
+    paint(name);
+    Object.keys(pages).forEach(function(k){
+      var on = k === name;
+      pages[k].classList.toggle('on', on);
+      pages[k].hidden = !on;
+    });
+    Object.keys(navs).forEach(function(k){
+      if (k === name) navs[k].setAttribute('aria-current','page');
+      else navs[k].removeAttribute('aria-current');
+    });
+    if (!initial) window.scrollTo(0,0);
+    sweep(pages[name], initial ? 900 : 500);
+  }
+  function go(name){
+    if (name === current) return;
+    if (reduce){ show(name, false); return; }
+    var c = pops[name], hex = isDark() ? c.d : c.l;
+    wipe.style.background = hex;
+    wipe.style.transformOrigin = 'left';
+    wipe.style.transition = 'transform .3s cubic-bezier(.7,0,.3,1)';
+    wipe.style.transform = 'scaleX(1)';
+    setTimeout(function(){
+      show(name, false);
+      wipe.style.transformOrigin = 'right';
+      wipe.style.transition = 'transform .42s cubic-bezier(.4,0,.2,1)';
+      wipe.style.transform = 'scaleX(0)';
+    }, 320);
+  }
+  window.addEventListener('hashchange', function(){ go(routeName()); });
+
+  /* ---------- highlighter sweeps ---------- */
+  function sweep(page, delay){
+    var hls = page.querySelectorAll('.hl');
+    if (reduce){ hls.forEach(function(h){ h.classList.add('on'); }); return; }
+    hls.forEach(function(h, i){
+      h.classList.remove('on');
+      setTimeout(function(){ h.classList.add('on'); }, delay + i*380);
+    });
+  }
+
+  /* ---------- name: drag, fling, spring ---------- */
+  var h1 = document.getElementById('name');
+  h1.querySelectorAll('.w').forEach(function(w){
+    var t = w.textContent; w.textContent = '';
+    for (var i = 0; i < t.length; i++){
+      var s = document.createElement('span');
+      s.className = 'l'; s.textContent = t[i]; s.setAttribute('aria-hidden','true');
+      w.appendChild(s);
+    }
+  });
+  var letters = [].slice.call(h1.querySelectorAll('.l'));
+  var S = letters.map(function(el, i){
+    return { el:el, x:0, y: reduce ? 0 : -140 - Math.random()*80, r: reduce ? 0 : (Math.random()-.5)*30,
+             vx:0, vy:0, vr:0, held:false, wait: reduce ? 0 : i*55, t:0, ox:0, oy:0 };
+  });
+  function apply(s){
+    s.el.style.transform = 'translate(' + s.x.toFixed(2) + 'px,' + s.y.toFixed(2) + 'px) rotate(' + s.r.toFixed(2) + 'deg)';
+  }
+  S.forEach(apply);
+
+  S.forEach(function(s){
+    s.el.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      s.el.setPointerCapture(e.pointerId);
+      s.held = true; s.el.classList.add('held');
+      s.ox = e.clientX - s.x; s.oy = e.clientY - s.y; s.t = performance.now();
+      s.vx = s.vy = 0; kick();
+    });
+    s.el.addEventListener('pointermove', function(e){
+      if (!s.held) return;
+      var now = performance.now(), dt = Math.max(now - s.t, 1);
+      var nx = e.clientX - s.ox, ny = e.clientY - s.oy;
+      s.vx = (nx - s.x) / dt * 16; s.vy = (ny - s.y) / dt * 16;
+      s.x = nx; s.y = ny; s.t = now;
+      s.r += (Math.max(-40, Math.min(40, s.vx*1.6)) - s.r) * .25;
+      apply(s);
+    });
+    function release(){
+      if (!s.held) return;
+      s.held = false; s.el.classList.remove('held'); s.vr = s.vx*0.6; kick();
+    }
+    s.el.addEventListener('pointerup', release);
+    s.el.addEventListener('pointercancel', release);
+    s.el.addEventListener('pointerenter', function(e){
+      if (reduce || s.held || e.pointerType !== 'mouse') return;
+      s.vy -= 4.5; s.vr += (Math.random()-.5)*10; kick();
+    });
+  });
+
+  var running = false, last = 0;
+  function kick(){ if (!running){ running = true; last = performance.now(); requestAnimationFrame(step); } }
+  function step(now){
+    var f = Math.min((now - last)/16.67, 3); last = now;
+    var busy = false;
+    S.forEach(function(s){
+      if (s.held){ busy = true; return; }
+      if (s.wait > 0){ s.wait -= f*16.67; busy = true; return; }
+      var k = .075, d = Math.pow(.84, f);
+      s.vx = (s.vx - s.x*k*f) * d; s.vy = (s.vy - s.y*k*f) * d; s.vr = (s.vr - s.r*k*f) * d;
+      s.x += s.vx*f; s.y += s.vy*f; s.r += s.vr*f;
+      if (Math.abs(s.x)+Math.abs(s.y)+Math.abs(s.r)+Math.abs(s.vx)+Math.abs(s.vy)+Math.abs(s.vr) < .03){
+        s.x = s.y = s.r = s.vx = s.vy = s.vr = 0;
+      } else busy = true;
+      apply(s);
+    });
+    if (busy) requestAnimationFrame(step); else running = false;
+  }
+  if (!reduce) kick();
+
+  /* ---------- handwritten note ---------- */
+  var note = document.getElementById('note');
+  note.querySelectorAll('path').forEach(function(p){ p.style.setProperty('--len', Math.ceil(p.getTotalLength()) + 2); });
+  setTimeout(function(){ note.classList.add('on'); }, reduce ? 0 : letters.length*55 + 650);
+
+  show(routeName(), true);
+})();
+</script>
+
+</body>
+</html>
