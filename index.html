@@ -181,6 +181,12 @@
   }
   .entry .where{color:var(--muted);margin:0 0 20px;font-size:1.02rem}
   .entry .aside{font-family:var(--hand);font-weight:600;color:var(--pop);font-size:1.3rem;display:inline-block;transform:rotate(-2deg);margin-left:8px}
+  .entry h2 a{text-decoration-color:var(--pop);text-decoration-thickness:2px;text-underline-offset:5px}
+  .visit{display:inline-flex;align-items:baseline;gap:7px;margin-top:18px;font-weight:600;text-decoration:none;color:var(--pop)}
+  .visit .arw{transition:transform .3s cubic-bezier(.2,.8,.2,1);display:inline-block}
+  .visit:hover{text-decoration:underline wavy;text-underline-offset:4px}
+  .visit:hover .arw{transform:translateX(6px)}
+  @media (prefers-reduced-motion:reduce){.visit .arw{transition:none}}
 
   .rule{border:0;border-top:1px solid var(--faint);margin:var(--stack) 0 0;max-width:34rem}
 
@@ -313,9 +319,10 @@
       <div class="entries" style="margin-top:var(--stack)">
         <article class="entry">
           <p class="when">2026 &ndash; now</p>
-          <h2>Digital Music Diary<span class="aside">still building this one</span></h2>
+          <h2><a href="https://d40l5ypxmjye5.cloudfront.net/" target="_blank" rel="noopener">Digital Music Diary</a><span class="aside">still building this one</span></h2>
           <p>A journal for the music you actually listen to, instead of the year-end summary an algorithm hands you. React and Django REST up front, with a serverless backend on Lambda, API Gateway, S3 and DynamoDB.</p>
           <p>I defined the user and the success metric first, then built against them. <span class="hl">Ship something small, then find out whether anyone comes back</span>.</p>
+          <a class="visit" href="https://d40l5ypxmjye5.cloudfront.net/" target="_blank" rel="noopener">visit the site <span class="arw">&rarr;</span></a>
         </article>
 
         <article class="entry">
